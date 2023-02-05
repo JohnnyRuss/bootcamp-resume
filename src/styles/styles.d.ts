@@ -5,13 +5,17 @@ declare module "styled-components" {
     size: Size;
     font: Font;
     colors: Colors;
+    container: Container;
   }
 
   interface Colors {
-    blue: "#0E80BF";
     black: "#000000";
     black_tint: "rgba(0,0,0,0.6)";
-    light_gray: "#1A1A1A";
+    gray_tint: "#2E2E2E";
+    light_gray: "#919191";
+    white: "#fff";
+    white_shade: "#F9F9F9";
+    blue: "#0E80BF";
     red: "#F93B1D";
     green: "#98E37E";
     purple: "#6B40E3";
@@ -32,5 +36,10 @@ declare module "styled-components" {
     base: 400;
     medium: 500;
     bold: 700;
+  }
+
+  interface Container {
+    desktop_w: "1920px";
+    desktop_w_inset: "1780px";
   }
 }
