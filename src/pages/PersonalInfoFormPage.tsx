@@ -1,8 +1,8 @@
 import React from "react";
-import PersonalInfo from "../components/Resume/PersonalInfo";
+import PersonalInfoForm from "../components/Resume/PersonalInfoForm";
 
 const PersonalInfoFormPage: React.FC = () => {
-  return <PersonalInfo />;
+  return <PersonalInfoForm />;
 };
 
 export default PersonalInfoFormPage;

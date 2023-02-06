@@ -7,6 +7,8 @@ interface TextFieldType {
   placeholder: string;
   id?: string;
   className?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const TextField: React.FC<TextFieldType> = ({
@@ -14,6 +16,8 @@ const TextField: React.FC<TextFieldType> = ({
   placeholder,
   id,
   className,
+  value,
+  onChange,
 }) => {
   return (
     <TextFieldContainer className={className || ""}>
@@ -24,6 +28,8 @@ const TextField: React.FC<TextFieldType> = ({
         className="text-field"
         placeholder={placeholder}
         id={id || ""}
+        value={value}
+        onChange={onChange}
       />
     </TextFieldContainer>
   );

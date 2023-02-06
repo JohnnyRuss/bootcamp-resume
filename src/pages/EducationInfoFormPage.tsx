@@ -1,11 +1,9 @@
 import React from "react";
 
-import Education from "../components/Resume/Education";
+import EducationForm from "../components/Resume/EducationForm";
 
-interface EducationInfoFormType {}
-
-const EducationInfoFormPage: React.FC<EducationInfoFormType> = (props) => {
-  return <Education />;
+const EducationInfoFormPage: React.FC = () => {
+  return <EducationForm />;
 };
 
 export default EducationInfoFormPage;

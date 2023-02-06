@@ -1,13 +1,9 @@
 import React from "react";
 
-import Experience from "../components/Resume/Experience";
+import ExperienceForm from "../components/Resume/ExperienceForm";
 
-interface ExperienceInfoFormPageType {}
-
-const ExperienceInfoFormPage: React.FC<ExperienceInfoFormPageType> = (
-  props
-) => {
-  return <Experience />;
+const ExperienceInfoFormPage: React.FC = () => {
+  return <ExperienceForm />;
 };
 
 export default ExperienceInfoFormPage;

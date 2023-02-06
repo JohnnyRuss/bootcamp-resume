@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BackBTN } from "./resume.styles";
+import { BackBTN } from "../styles/resume.styles";
 
 interface GoBackBTNType {
   handler: () => void;

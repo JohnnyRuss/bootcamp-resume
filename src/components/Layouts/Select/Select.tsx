@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SelectEl, { ActionMeta } from "react-select";
+import SelectEl, { ActionMeta, OnChangeValue, PropsValue } from "react-select";
 import { SelectContainer } from "./select.styles";
 
 type OptionT = {
@@ -7,12 +7,16 @@ type OptionT = {
   label: string;
 } | null;
 
+type SelectedValuleT = PropsValue<OptionT> | undefined;
+
 interface SelectT {
   options: OptionT[];
+  defaultVal: SelectedValuleT;
   label: string;
   hasError: boolean;
   isChecked: boolean;
   placeholder?: string;
+  onSelect: (val: string) => void;
 }
 
 const Select: React.FC<SelectT> = ({
@@ -21,21 +25,28 @@ const Select: React.FC<SelectT> = ({
   hasError,
   isChecked,
   placeholder,
+  onSelect,
+  defaultVal,
 }) => {
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] =
+    useState<SelectedValuleT>(defaultVal);
 
   const onChange = (
-    option: OptionT | null,
-    actionMeta: ActionMeta<OptionT>
-  ) => {};
+    value: OnChangeValue<OptionT, false>,
+    action: ActionMeta<OptionT>
+  ) => {
+    onSelect(value?.value || "");
+    setSelectedOption(value);
+  };
 
   return (
     <SelectContainer hasError={hasError} isChecked={isChecked}>
       <label className="label">{label}</label>
       <div className="inp-field">
         <SelectEl
-          defaultValue={selectedOption}
+          value={selectedOption}
           onChange={onChange}
+          isMulti={false}
           options={options}
           placeholder={placeholder || ""}
           classNames={{
