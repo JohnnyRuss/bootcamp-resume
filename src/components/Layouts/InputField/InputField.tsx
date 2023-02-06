@@ -6,6 +6,8 @@ interface InputFieldType {
   hasError: boolean;
   message: string;
   isChecked: boolean;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label: string;
   placeholder: string;
   id?: string;
@@ -16,6 +18,8 @@ const InputField: React.FC<InputFieldType> = ({
   hasError,
   message,
   isChecked,
+  value,
+  onChange,
   label,
   placeholder,
   id,
@@ -31,7 +35,13 @@ const InputField: React.FC<InputFieldType> = ({
         {label}
       </label>
       <div className="inp-field">
-        <input type="text" placeholder={placeholder} id={id || ""} />
+        <input
+          type="text"
+          placeholder={placeholder}
+          id={id || ""}
+          onChange={onChange}
+          value={value}
+        />
       </div>
       <span className="message">{message}</span>
     </FieldContainer>

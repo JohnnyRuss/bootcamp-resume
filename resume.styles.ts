@@ -115,6 +115,7 @@ export const UserResumeContainer = styled.div`
         }
       }
     }
+    background: royalblue;
   }
 
   .user-info__section {

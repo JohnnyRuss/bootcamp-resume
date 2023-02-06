@@ -12,7 +12,7 @@ const form = css`
   .navigate-btn__next {
     grid-column: 2;
     justify-self: end;
-    margin-top: 11rem;
+    /* margin-top: 1rem; */
   }
 `;
 
@@ -30,6 +30,10 @@ export const FormContainer = styled.form`
     .add-img__btn {
       padding: 0.5rem 2rem;
       font-size: ${({ theme }) => theme.size.sm};
+      background: ${({ theme }) => theme.colors.blue};
+      color: ${({ theme }) => theme.colors.white};
+      border-radius: 0.5rem;
+      cursor: pointer;
     }
   }
 `;
@@ -45,7 +49,7 @@ export const MultyFormContainer = styled.form`
   .navigate-btns__box {
     display: flex;
     justify-content: space-between;
-    margin-top: 11rem;
+    margin-top: 6rem;
   }
 `;
 

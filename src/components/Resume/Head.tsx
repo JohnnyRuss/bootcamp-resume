@@ -1,17 +1,16 @@
 import React from "react";
 
-import { ResumeHeaderContainer } from "./resume.styles";
-
-interface HeadType {
-  page: number;
+import { ResumeHeaderContainer } from "./styles/resume.styles";
+interface HeadT {
+  location: { title: string; page: number };
 }
 
-const Head: React.FC<HeadType> = (props) => {
+const Head: React.FC<HeadT> = ({ location }) => {
   return (
     <ResumeHeaderContainer>
       <div className="header-wrapper">
-        <span className="progress-title">პირადი ინფო</span>
-        <span className="progress-step">1/3</span>
+        <span className="progress-title">{location.title}</span>
+        <span className="progress-step">{location.page}/3</span>
       </div>
     </ResumeHeaderContainer>
   );
