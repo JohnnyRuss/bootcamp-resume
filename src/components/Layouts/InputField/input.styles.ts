@@ -12,7 +12,7 @@ export const FieldContainer = styled.div<{
   ${inpFieldContainer};
 
   .inp-label {
-    ${fieldLabel}
+    ${({ hasError }) => fieldLabel(hasError)}
   }
 
   .inp-field {

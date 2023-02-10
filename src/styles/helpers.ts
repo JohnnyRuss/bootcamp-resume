@@ -9,7 +9,7 @@ export const inpFieldContainer = () => css`
 export const requiredField = ({
   isChecked,
   hasError,
-  isDateField
+  isDateField,
 }: {
   isChecked: boolean;
   hasError: boolean;
@@ -55,6 +55,7 @@ export const requiredField = ({
   }
 `;
 
-export const fieldLabel = () => css`
-    font-weight: ${({ theme }) => theme.font.medium};
+export const fieldLabel = (hasError: boolean) => css`
+  font-weight: ${({ theme }) => theme.font.medium};
+  color: ${({ theme }) => (hasError ? theme.colors.red : "")} !important;
 `;

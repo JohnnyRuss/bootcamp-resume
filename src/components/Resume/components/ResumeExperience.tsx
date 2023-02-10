@@ -9,19 +9,20 @@ const ResumeExperience: React.FC<ResumeExperienceType> = ({ experience }) => {
   return (
     <Fragment>
       <div className="label-date__container">
-        {experience.position && (
+        {(experience.position || experience.employer) && (
           <span className="section__main-label">
             <>
-              {experience.position}{" "}
-              {experience.employer ? `- ${experience.employer}` : ""}
+              {experience.position}
+              {experience.position && experience.employer ? ", " : ""}
+              {experience.employer}
             </>
           </span>
         )}
-        {(experience.startDate || experience.endDate) && (
+        {(experience.start_date || experience.due_date) && (
           <span className="section__date-period">
             <>
-              {experience.startDate}{" "}
-              {experience.endDate ? `- ${experience.endDate}` : ""}
+              {experience.start_date}{" "}
+              {experience.due_date ? `- ${experience.due_date}` : ""}
             </>
           </span>
         )}

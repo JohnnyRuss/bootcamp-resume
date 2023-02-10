@@ -15,7 +15,8 @@ export const ResumeContainer = styled.section`
     padding-bottom: 4rem;
 
     .forms-wrapper {
-      width: min(100%, 80rem);
+      width: min(100%, 88rem);
+      padding: 0 4rem;
       max-height: calc(100vh - 12.5rem);
       overflow: auto;
 
@@ -30,12 +31,6 @@ export const ResumeContainer = styled.section`
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 2rem 0 4rem 0;
-
-    .logo-small {
-      margin-left: 8rem;
-      margin-top: 1.5rem;
-    }
   }
 `;
 
@@ -66,7 +61,21 @@ export const ResumeHeaderContainer = styled.header`
 `;
 
 export const UserResumeContainer = styled.div`
-  padding: 0 7.5rem;
+  padding: 2rem 7.5rem;
+  height: 100vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  .logo-small {
+    width: max-content;
+    margin-top: auto;
+    padding: 2rem 0 4rem 0;
+  }
 
   .personal-details {
     /* min-height: 26.5rem; */
@@ -150,7 +159,7 @@ export const UserResumeContainer = styled.div`
   .user__name {
     color: ${({ theme }) => theme.colors.red};
     font-size: ${({ theme }) => theme.size.xxl};
-    font-weight: ${({ theme }) => theme.font.bold};
+    font-weight: ${({ theme }) => theme.font.bolder};
   }
 
   .section-head {

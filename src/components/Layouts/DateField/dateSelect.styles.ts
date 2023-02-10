@@ -12,7 +12,7 @@ export const DateSelectContainer = styled.div<{
   ${inpFieldContainer};
 
   .label {
-    ${fieldLabel}
+    ${({ hasError }) => fieldLabel(hasError)}
   }
 
   .inp-field {
