@@ -3,27 +3,29 @@ import React from "react";
 import { FieldContainer } from "./input.styles";
 
 interface InputFieldType {
-  hasError: boolean;
-  message: string;
-  isChecked: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
+  hasError: boolean;
+  isChecked: boolean;
+  message: string;
   label: string;
   placeholder: string;
-  id?: string;
   className?: string;
+  id?: string;
 }
 
 const InputField: React.FC<InputFieldType> = ({
-  hasError,
-  message,
-  isChecked,
   value,
   onChange,
+  onBlur,
+  hasError,
+  isChecked,
+  message,
   label,
   placeholder,
-  id,
   className,
+  id,
 }) => {
   return (
     <FieldContainer
@@ -41,6 +43,7 @@ const InputField: React.FC<InputFieldType> = ({
           id={id || ""}
           onChange={onChange}
           value={value}
+          onBlur={() => onBlur && onBlur()}
         />
       </div>
       <span className="message">{message}</span>

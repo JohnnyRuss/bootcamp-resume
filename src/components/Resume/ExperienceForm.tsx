@@ -1,14 +1,54 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import {
+  useDescendentValidation,
+  useValidateInLoop,
+} from "../../hooks/useValidate";
+import { ErrorT } from "../../hooks/useValidate";
 import { useResumeStore } from "../../store/resumeState";
 
 import { Button } from "../Layouts";
 import { MultyFormContainer } from "./styles/forms.styles";
 import ExperienceFormStep from "./components/ExperienceFormStep";
 
+export type SetAllValidatorsPropsT = { step: number; validate: () => ErrorT }[];
+
 const Experience: React.FC = () => {
-  const { experience, createExperienceStep } = useResumeStore();
   const navigate = useNavigate();
+
+  const {
+    experience,
+    createExperienceStep,
+    personalInfoIsChecked,
+    setFormIsChecked,
+  } = useResumeStore();
+
+  const {
+    allDescendentValidators,
+    validatorsElevator,
+    removeElevatedValidators,
+  } = useDescendentValidation();
+
+  const initValidateInLoop = useValidateInLoop();
+
+  function navigateToNextForm(e: React.MouseEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const isError = initValidateInLoop(
+      allDescendentValidators.map((executor) => executor.validate)
+    );
+
+    setFormIsChecked("experienceIsChecked", !isError);
+
+    if (!isError) navigate("/resume/education");
+  }
+
+  // prevent route hack
+  useEffect(() => {
+    if (!personalInfoIsChecked) navigate("/resume/personal-info");
+  }, []);
 
   return (
     <MultyFormContainer>
@@ -18,6 +58,8 @@ const Experience: React.FC = () => {
           step={i}
           last={i === arr.length - 1}
           key={`experience-step--${i}`}
+          validatorsElevator={validatorsElevator}
+          removeElevatedValidators={removeElevatedValidators}
         />
       ))}
       <Button
@@ -39,14 +81,7 @@ const Experience: React.FC = () => {
         >
           უკან
         </Button>
-        <Button
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault();
-            navigate("/resume/education");
-          }}
-        >
-          შემდეგი
-        </Button>
+        <Button onClick={navigateToNextForm}>შემდეგი</Button>
       </div>
     </MultyFormContainer>
   );

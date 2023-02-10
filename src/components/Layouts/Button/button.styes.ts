@@ -20,4 +20,9 @@ export const BTN = styled.button<{ btnType: BTN_T }>`
       : ""};
   color: ${({ theme }) => theme.colors.white};
   font-weight: ${({ theme }) => theme.font.medium};
+
+  :disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;

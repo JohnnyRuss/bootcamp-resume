@@ -9,6 +9,7 @@ interface ButtonType {
   type?: BTN_T;
   className?: string;
   onClick: (e?: any) => void;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonType> = ({
@@ -16,9 +17,15 @@ const Button: React.FC<ButtonType> = ({
   type = "primary",
   className,
   onClick,
+  disabled,
 }) => {
   return (
-    <BTN btnType={type} className={className || ""} onClick={onClick}>
+    <BTN
+      btnType={type}
+      className={className || ""}
+      onClick={onClick}
+      disabled={disabled || false}
+    >
       {children}
     </BTN>
   );

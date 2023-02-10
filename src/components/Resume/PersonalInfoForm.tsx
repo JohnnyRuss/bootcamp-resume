@@ -1,14 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useResumeStore } from "../../store/resumeState";
 
-import readFileAsDataUrl from "../../lib/readBase64";
+import {
+  useValidate,
+  useFileValidation,
+  useValidateInLoop,
+} from "../../hooks/useValidate";
+import { useResumeStore } from "../../store/resumeState";
+import { readFileAsDataUrl } from "../../lib/readBase64";
 
 import { InputField, TextField, Button } from "../Layouts";
-import { FormContainer } from "./styles/forms.styles";
+import { FormContainer, FileField } from "./styles/forms.styles";
 
 const PersonalInfo: React.FC = () => {
   const navigate = useNavigate();
+
   const {
     personalInfo,
     setUserName,
@@ -17,9 +23,10 @@ const PersonalInfo: React.FC = () => {
     setAboutMe,
     setEmail,
     setMobile,
+    setFormIsChecked,
   } = useResumeStore();
 
-  async function handeAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const file = e.currentTarget.files?.[0] || null;
 
@@ -30,49 +37,117 @@ const PersonalInfo: React.FC = () => {
     await readFileAsDataUrl(file, getURL);
   }
 
+  const {
+    onBlur: onNameBlur,
+    error: nameError,
+    lazyValidate: validateName,
+  } = useValidate(personalInfo.name, "validate2letterAndGeorgian");
+
+  const {
+    onBlur: onLastNameBlur,
+    error: lastNameError,
+    lazyValidate: validateLastName,
+  } = useValidate(personalInfo.surname, "validate2letterAndGeorgian");
+
+  const {
+    onBlur: onEmailBlur,
+    error: emailError,
+    lazyValidate: validateEmail,
+  } = useValidate(personalInfo.email, "validEmail");
+
+  const {
+    onBlur: onMobileBlur,
+    error: mobileError,
+    lazyValidate: validateMobile,
+  } = useValidate(personalInfo.phone_number, "isGeorgiasPhoneNumber");
+
+  const {
+    onBlur: onFileBlur,
+    wasToched,
+    error: fileError,
+    lazyValidate: validateFile,
+  } = useFileValidation(personalInfo.image);
+
+  const validForm =
+    nameError.hasError ||
+    lastNameError.hasError ||
+    fileError.hasError ||
+    emailError.hasError ||
+    mobileError.hasError;
+
+  const initValidateInLoop = useValidateInLoop();
+
+  async function navigateToNextForm(e: React.MouseEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const isError = initValidateInLoop([
+      validateName,
+      validateLastName,
+      validateEmail,
+      validateMobile,
+    ]);
+
+    const { hasError: fileErr } = await validateFile();
+
+    setFormIsChecked("personalInfoIsChecked", !isError && !fileErr);
+
+    !isError && !fileErr && navigate("/resume/experience");
+  }
+
   return (
     <FormContainer>
       <InputField
-        hasError={false}
-        isChecked={false}
+        hasError={nameError.hasError}
+        isChecked={nameError.isChecked && !nameError.hasError}
         value={personalInfo.name}
         onChange={(e) => setUserName(e.currentTarget.value)}
+        onBlur={onNameBlur}
         message="მინიმუმ 2 ასო, ქართული ასოები"
         label="სახელი"
         placeholder="სახელი"
       />
 
       <InputField
-        hasError={false}
-        isChecked={false}
-        value={personalInfo.lastName}
+        hasError={lastNameError.hasError}
+        isChecked={lastNameError.isChecked && !lastNameError.hasError}
+        value={personalInfo.surname}
         onChange={(e) => setLastName(e.currentTarget.value)}
+        onBlur={onLastNameBlur}
         message="მინიმუმ 2 ასო, ქართული ასოები"
         label="გვარი"
         placeholder="გვარი"
       />
 
-      <div className="col-span-2 add-img">
+      <FileField
+        className="col-span-2"
+        hasError={fileError.hasError}
+        isChecked={fileError.isChecked && !fileError.hasError}
+      >
         <span>პირადი ფოტოს ატვირთვა</span>
-        <label className="add-img__btn" htmlFor="avatar">
+        <label
+          className="add-img__btn"
+          htmlFor="avatar"
+          onClick={() => !wasToched && onFileBlur()}
+        >
           ატვირთვა
         </label>
-        <input type="file" hidden id="avatar" onChange={handeAvatar} />
-      </div>
+        <input type="file" hidden id="avatar" onChange={handleAvatar} />
+      </FileField>
 
       <TextField
         label="ჩემს შესახებ (არასავალდებულო)"
         placeholder="ზოგადი ინფო შენს შესახებ"
         className="col-span-2"
-        value={personalInfo.aboutMe}
+        value={personalInfo.about_me}
         onChange={(e) => setAboutMe(e.currentTarget.value)}
       />
 
       <InputField
-        hasError={false}
-        isChecked={false}
+        hasError={emailError.hasError}
+        isChecked={emailError.isChecked && !emailError.hasError}
         value={personalInfo.email}
         onChange={(e) => setEmail(e.currentTarget.value)}
+        onBlur={onEmailBlur}
         message="უნდა მთავრდებოდეს @redberry.ge-ით"
         label="ელ.ფოსტა"
         placeholder="ელ.ფოსტა"
@@ -80,10 +155,11 @@ const PersonalInfo: React.FC = () => {
       />
 
       <InputField
-        hasError={false}
-        isChecked={false}
-        value={personalInfo.mobile}
+        hasError={mobileError.hasError}
+        isChecked={mobileError.isChecked && !mobileError.hasError}
+        value={personalInfo.phone_number}
         onChange={(e) => setMobile(e.currentTarget.value)}
+        onBlur={onMobileBlur}
         message="უნდა აკმაყოფილებდეს ქართული მობილური ნომრის ფორმატს"
         label="მობილურის ნომერი"
         placeholder="მობილური ნომერი"
@@ -91,8 +167,9 @@ const PersonalInfo: React.FC = () => {
       />
 
       <Button
-        onClick={() => navigate("/resume/experience")}
+        onClick={navigateToNextForm}
         className="navigate-btn navigate-btn__next"
+        disabled={validForm}
       >
         შემდეგი
       </Button>

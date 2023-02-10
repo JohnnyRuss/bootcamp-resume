@@ -5,6 +5,7 @@ import { SelectContainer } from "./select.styles";
 type OptionT = {
   value: string;
   label: string;
+  _id: number;
 } | null;
 
 type SelectedValuleT = PropsValue<OptionT> | undefined;
@@ -12,11 +13,18 @@ type SelectedValuleT = PropsValue<OptionT> | undefined;
 interface SelectT {
   options: OptionT[];
   defaultVal: SelectedValuleT;
-  label: string;
   hasError: boolean;
   isChecked: boolean;
+  label: string;
   placeholder?: string;
-  onSelect: (val: string) => void;
+  onBlur?: () => void;
+  onSelect: ({
+    label,
+    degree_id,
+  }: {
+    label: string;
+    degree_id: number;
+  }) => void;
 }
 
 const Select: React.FC<SelectT> = ({
@@ -27,6 +35,7 @@ const Select: React.FC<SelectT> = ({
   placeholder,
   onSelect,
   defaultVal,
+  onBlur,
 }) => {
   const [selectedOption, setSelectedOption] =
     useState<SelectedValuleT>(defaultVal);
@@ -35,7 +44,7 @@ const Select: React.FC<SelectT> = ({
     value: OnChangeValue<OptionT, false>,
     action: ActionMeta<OptionT>
   ) => {
-    onSelect(value?.value || "");
+    onSelect({ label: value?.value || "", degree_id: value?._id || NaN });
     setSelectedOption(value);
   };
 
@@ -44,10 +53,11 @@ const Select: React.FC<SelectT> = ({
       <label className="label">{label}</label>
       <div className="inp-field">
         <SelectEl
-          value={selectedOption}
-          onChange={onChange}
           isMulti={false}
           options={options}
+          value={selectedOption}
+          onChange={onChange}
+          onBlur={onBlur}
           placeholder={placeholder || ""}
           classNames={{
             container: () => "sel-container",

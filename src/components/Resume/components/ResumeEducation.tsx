@@ -9,19 +9,18 @@ const ResumeEducation: React.FC<ResumeEducationType> = ({ education }) => {
   return (
     <Fragment>
       <div className="label-date__container">
-        {education.collage && (
+        {(education.institute || education.degree.label) && (
           <span className="section__main-label">
             <>
-              {education.collage}{" "}
-              {education.degree ? `- ${education.degree}` : ""}
+              {education.institute}{" "}
+              {education.institute && education.degree.label ? ", " : ""}
+              {education.degree.label}
             </>
           </span>
         )}
-        {education.endDate && (
+        {education.due_date && (
           <span className="section__date-period">
-            <>
-              {education.endDate} - {education.endDate}
-            </>
+            <>{education.due_date}</>
           </span>
         )}
       </div>

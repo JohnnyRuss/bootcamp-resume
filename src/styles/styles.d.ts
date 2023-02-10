@@ -34,8 +34,9 @@ declare module "styled-components" {
 
   interface Font {
     base: 400;
-    medium: 500;
+    medium: 600;
     bold: 700;
+    bolder: 900;
   }
 
   interface Container {

@@ -3,7 +3,9 @@ import { createGlobalStyle } from "styled-components";
 export const AppStyles = createGlobalStyle`
     @font-face {
       font-family: "HelveticaNeue";
-      src: url("./HelveticaNeue.ttc") format('truetype');
+      src: url("/HelveticaNeue.ttc");
+      font-weight: normal;
+      font-size: normal;
     }
     
 
@@ -40,5 +42,6 @@ export const AppStyles = createGlobalStyle`
     input,
     textarea{
       outline: none;
+      font-family: inherit;
     }
 `;

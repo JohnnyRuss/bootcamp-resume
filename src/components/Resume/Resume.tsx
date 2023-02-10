@@ -15,22 +15,27 @@ const ResumeContainer: React.FC<ResumeContainerType> = ({ children }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const location: { title: string; page: number; backPath: string } =
-    pathname.endsWith("/personal-info")
-      ? { title: "პირადი ინფო", page: 1, backPath: "/resume/personal-info" }
-      : pathname.endsWith("/experience")
-      ? { title: "გამოცდილება", page: 2, backPath: "/resume/personal-info" }
-      : pathname.endsWith("/education")
-      ? { title: "განათლება", page: 3, backPath: "/resume/experience" }
-      : { title: "", page: NaN, backPath: "/" };
-
-  const handleBack = () => navigate(location.backPath);
-
   const resume = useResumeStore((state) => ({
     personalInfo: state.personalInfo,
     experience: state.experience,
     education: state.education,
+    resetResumeForms: state.resetResumeForms,
   }));
+
+  const location: { title: string; page: number } = pathname.endsWith(
+    "/personal-info"
+  )
+    ? { title: "პირადი ინფო", page: 1 }
+    : pathname.endsWith("/experience")
+    ? { title: "გამოცდილება", page: 2 }
+    : pathname.endsWith("/education")
+    ? { title: "განათლება", page: 3 }
+    : { title: "", page: NaN };
+
+  const handleBack = () => {
+    resume.resetResumeForms();
+    navigate("/", { replace: true });
+  };
 
   return (
     <Resume>
@@ -43,9 +48,6 @@ const ResumeContainer: React.FC<ResumeContainerType> = ({ children }) => {
 
       <div className="inset-container__resume">
         <UserResume resume={resume} />
-        <figure className="logo-small">
-          <img src="/assets/icons/logo-small.svg" alt="redberry logo" />
-        </figure>
       </div>
     </Resume>
   );

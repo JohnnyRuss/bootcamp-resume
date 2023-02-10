@@ -1,5 +1,7 @@
 import React from "react";
 
+import createImgDBUrl from "../../../lib/createImgDBUrl";
+
 import { PersonalInfoT } from "../../../store/resume.types";
 interface ResumePersonalInfoType {
   personalInfo: PersonalInfoT;
@@ -10,15 +12,22 @@ const ResumePersonalInfo: React.FC<ResumePersonalInfoType> = ({
 }) => {
   return (
     <div className="personal-details">
-      {personalInfo.avatar && (
+      {personalInfo.image && (
         <figure className="user-fig">
-          <img src={JSON.parse(personalInfo.avatar)} alt="user" />
+          <img
+            src={
+              personalInfo.image.startsWith("/storage")
+                ? createImgDBUrl(personalInfo.image)
+                : JSON.parse(personalInfo.image)
+            }
+            alt="user"
+          />
         </figure>
       )}
 
       <div className="user-personal--details">
         <h4 className="user__name">
-          {personalInfo.name} {personalInfo.lastName}
+          {personalInfo.name} {personalInfo.surname}
         </h4>
         <div className="email-phone__container">
           {personalInfo.email && (
@@ -29,7 +38,7 @@ const ResumePersonalInfo: React.FC<ResumePersonalInfoType> = ({
               <span>{personalInfo.email}</span>
             </div>
           )}
-          {personalInfo.mobile && (
+          {personalInfo.phone_number && (
             <div className="mobile">
               <figure>
                 <img src="/assets/icons/phone.svg" alt="at @" />
@@ -38,11 +47,11 @@ const ResumePersonalInfo: React.FC<ResumePersonalInfoType> = ({
             </div>
           )}
         </div>
-        {personalInfo.aboutMe && (
+        {personalInfo.about_me && (
           <>
             <span className="section-head about-me">ჩემს შესახებ</span>
             <blockquote className="section-description">
-              {personalInfo.aboutMe}
+              {personalInfo.about_me}
             </blockquote>
           </>
         )}

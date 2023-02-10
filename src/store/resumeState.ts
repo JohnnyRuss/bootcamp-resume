@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import readFileAsDataUrl from "../lib/readBase64";
 
 import {
   PersonalInfoT,
@@ -10,13 +9,20 @@ import {
   ResumeT,
 } from "./resume.types";
 
+import { axiosQuery } from "./axiosConfig";
+
 interface ResumeStateT {
-  // form data
+  // Forms Data
   personalInfo: PersonalInfoT;
   experience: ExperienceT[];
   education: EducationT[];
+  degrees: { label: string; value: string; _id: number }[];
 
-  // personal-info
+  personalInfoIsChecked: boolean;
+  experienceIsChecked: boolean;
+  educationIsChecked: boolean;
+
+  // Personal-Info
   setUserName: (val: string) => void;
   setLastName: (val: string) => void;
   setAvatar: (val: string) => void;
@@ -24,46 +30,65 @@ interface ResumeStateT {
   setEmail: (val: string) => void;
   setMobile: (val: string) => void;
 
-  // experience
+  // Experience
   createExperienceStep: () => void;
+  removeExperienceStep: (step: number) => void;
   setPosition: (step: number, val: string) => void;
   setEmployer: (step: number, val: string) => void;
   setStartDate: (step: number, val: string) => void;
   setEndDate: (step: number, val: string) => void;
   setDescription: (step: number, val: string) => void;
 
-  // education
+  // Education
   createEducationStep: () => void;
+  removeEducationStep: (step: number) => void;
   setCollage: (step: number, val: string) => void;
-  setDegree: (step: number, val: string) => void;
+  setDegree: (step: number, val: { label: string; degree_id: number }) => void;
   setEduEndDate: (step: number, val: string) => void;
   setEduDescription: (step: number, val: string) => void;
+
+  // Reset Resume Forms
+  resetResumeForms: () => void;
+  setFormIsChecked: (
+    form:
+      | "personalInfoIsChecked"
+      | "experienceIsChecked"
+      | "educationIsChecked",
+    check: boolean
+  ) => void;
+  resetFormChecks: () => void;
+
+  // Fetch Degrees
+  getDegrees: () => Promise<void>;
 }
 
 const ResumeState: ResumeT = {
   personalInfo: {
     name: "",
-    lastName: "",
-    avatar: "",
-    aboutMe: "",
+    surname: "",
+    image: "",
+    about_me: "",
     email: "",
-    mobile: "",
+    phone_number: "",
   },
   experience: [
     {
       position: "",
       description: "",
       employer: "",
-      endDate: "",
-      startDate: "",
+      due_date: "",
+      start_date: "",
     },
   ],
   education: [
     {
-      collage: "",
-      degree: "",
+      institute: "",
+      degree: {
+        label: "",
+        degree_id: NaN,
+      },
       description: "",
-      endDate: "",
+      due_date: "",
     },
   ],
 };
@@ -74,6 +99,13 @@ export const useResumeStore = create<ResumeStateT>()(
       persist(
         (set, get) => ({
           ...ResumeState,
+
+          degrees: [],
+
+          personalInfoIsChecked: false,
+          experienceIsChecked: false,
+          educationIsChecked: false,
+
           // Personal Info
           setUserName: (val) =>
             set((state) => {
@@ -81,15 +113,15 @@ export const useResumeStore = create<ResumeStateT>()(
             }),
           setLastName: (val) =>
             set((state) => {
-              state.personalInfo.lastName = val;
+              state.personalInfo.surname = val;
             }),
           setAvatar: (val) =>
             set((state) => {
-              state.personalInfo.avatar = val;
+              state.personalInfo.image = val;
             }),
           setAboutMe: (val) =>
             set((state) => {
-              state.personalInfo.aboutMe = val;
+              state.personalInfo.about_me = val;
             }),
           setEmail: (val) =>
             set((state) => {
@@ -97,7 +129,7 @@ export const useResumeStore = create<ResumeStateT>()(
             }),
           setMobile: (val) =>
             set((state) => {
-              state.personalInfo.mobile = val;
+              state.personalInfo.phone_number = val;
             }),
 
           // Experience
@@ -109,10 +141,14 @@ export const useResumeStore = create<ResumeStateT>()(
                   position: "",
                   description: "",
                   employer: "",
-                  endDate: "",
-                  startDate: "",
+                  due_date: "",
+                  start_date: "",
                 },
               ];
+            }),
+          removeExperienceStep: (step) =>
+            set((state) => {
+              state.experience = state.experience.filter((ex, i) => i !== step);
             }),
           setPosition: (step, val) =>
             set((state) => {
@@ -124,11 +160,11 @@ export const useResumeStore = create<ResumeStateT>()(
             }),
           setStartDate: (step, val) =>
             set((state) => {
-              state.experience[step].startDate = val;
+              state.experience[step].start_date = val;
             }),
           setEndDate: (step, val) =>
             set((state) => {
-              state.experience[step].endDate = val;
+              state.experience[step].due_date = val;
             }),
           setDescription: (step, val) =>
             set((state) => {
@@ -141,29 +177,76 @@ export const useResumeStore = create<ResumeStateT>()(
               state.education = [
                 ...state.education,
                 {
-                  collage: "",
-                  degree: "",
+                  institute: "",
+                  degree: {
+                    label: "",
+                    degree_id: NaN,
+                  },
                   description: "",
-                  endDate: "",
+                  due_date: "",
                 },
               ];
             }),
+          removeEducationStep: (step) =>
+            set((state) => {
+              state.education = state.education.filter((ex, i) => i !== step);
+            }),
           setCollage: (step, val) =>
             set((state) => {
-              state.education[step].collage = val;
+              state.education[step].institute = val;
             }),
           setDegree: (step, val) =>
             set((state) => {
-              state.education[step].degree = val;
+              state.education[step].degree = {
+                label: val.label,
+                degree_id: val.degree_id,
+              };
             }),
           setEduEndDate: (step, val) =>
             set((state) => {
-              state.education[step].endDate = val;
+              state.education[step].due_date = val;
             }),
           setEduDescription: (step, val) =>
             set((state) => {
               state.education[step].description = val;
             }),
+
+          // Reset Resume Forms
+          resetResumeForms: () =>
+            set((state) => {
+              state.personalInfo = ResumeState.personalInfo;
+              state.experience = ResumeState.experience;
+              state.education = ResumeState.education;
+            }),
+
+          setFormIsChecked: (form, check) =>
+            set((state) => {
+              state[form] = check;
+            }),
+
+          resetFormChecks: () => {
+            set({
+              personalInfoIsChecked: false,
+              experienceIsChecked: false,
+              educationIsChecked: false,
+            });
+          },
+
+          // Fetch Degrees
+          getDegrees: async () => {
+            try {
+              const { data }: { data: { id: number; title: string }[] } =
+                await axiosQuery("/degrees");
+
+              set({
+                degrees: data.map((deg) => ({
+                  label: deg.title,
+                  value: deg.title,
+                  _id: deg.id,
+                })),
+              });
+            } catch (error) {}
+          },
         }),
         {
           name: "resume",

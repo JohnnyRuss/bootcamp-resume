@@ -12,29 +12,47 @@ const form = css`
   .navigate-btn__next {
     grid-column: 2;
     justify-self: end;
-    /* margin-top: 1rem; */
   }
 `;
 
 export const FormContainer = styled.form`
   ${form};
   padding: 6.5rem 0;
+`;
 
-  .add-img {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    font-size: ${({ theme }) => theme.size.md};
-    font-weight: ${({ theme }) => theme.font.medium};
+export const FileField = styled.div<{
+  hasError: boolean;
+  isChecked: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  width: max-content;
+  font-size: ${({ theme }) => theme.size.md};
+  font-weight: ${({ theme }) => theme.font.medium};
+  color: ${({ hasError, theme }) => (hasError ? theme.colors.red : "")};
 
-    .add-img__btn {
-      padding: 0.5rem 2rem;
-      font-size: ${({ theme }) => theme.size.sm};
-      background: ${({ theme }) => theme.colors.blue};
-      color: ${({ theme }) => theme.colors.white};
-      border-radius: 0.5rem;
-      cursor: pointer;
-    }
+  .add-img__btn {
+    padding: 0.5rem 2rem;
+    font-size: ${({ theme }) => theme.size.sm};
+    background: ${({ theme }) => theme.colors.blue};
+    color: ${({ theme }) => theme.colors.white};
+    border-radius: 0.5rem;
+    cursor: pointer;
+  }
+
+  &::after {
+    content: "";
+    width: 3rem;
+    height: 3rem;
+    background: ${({ hasError, isChecked }) =>
+      hasError
+        ? "url('/assets/icons/error.svg')"
+        : isChecked
+        ? "url('/assets/icons/check.svg')"
+        : ""};
+    background-repeat: no-repeat;
+    background-position: center;
   }
 `;
 
@@ -57,4 +75,15 @@ export const MultyForm = styled.div`
   ${form}
   padding: 3rem 0;
   border-bottom: 1px solid ${({ theme }) => theme.colors.gray_tint};
+  position: relative;
+
+  .close-step--btn {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    padding: 0.5rem;
+    border-radius: 100%;
+    border: 1px solid ${({ theme }) => theme.colors.light_gray};
+    color: ${({ theme }) => theme.colors.red};
+  }
 `;
