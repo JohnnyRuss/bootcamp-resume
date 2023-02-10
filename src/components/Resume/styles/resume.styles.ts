@@ -78,8 +78,6 @@ export const UserResumeContainer = styled.div`
   }
 
   .personal-details {
-    /* min-height: 26.5rem; */
-
     .user-fig {
       float: right;
       width: 25rem;
