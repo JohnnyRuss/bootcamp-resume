@@ -8,6 +8,7 @@ import ResumeExperience from "./ResumeExperience";
 import ResumeEducation from "./ResumeEducation";
 
 import { ResumeT } from "../../../store/resume.types";
+
 interface UserResumeType {
   className?: string;
   resume: ResumeT;

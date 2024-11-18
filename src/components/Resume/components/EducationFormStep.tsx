@@ -31,7 +31,6 @@ const EducationFormStep: React.FC<EducationFormStepType> = ({
     setDegree,
     setEduEndDate,
     setEduDescription,
-    getDegrees,
     removeEducationStep,
   } = useResumeStore();
 
@@ -88,10 +87,6 @@ const EducationFormStep: React.FC<EducationFormStepType> = ({
       resetDescriptionError,
     ].map((reset) => reset());
   }, [education]);
-
-  useEffect(() => {
-    getDegrees();
-  }, []);
 
   return (
     <MultyForm className={`multy-form ${last ? "multy-form__last" : ""}`}>

@@ -32,10 +32,11 @@ export class Validator {
 
   validEmail(value: ValueT): ErrorT {
     const isEmail = value ? regs.isEmail.test(value) : false;
-    const endsWithRedberry = value ? value.endsWith("@redberry.ge") : false;
+    // const endsWithRedberry = value ? value.endsWith("@redberry.ge") : false;
 
     let error = false;
-    if (!isEmail || !endsWithRedberry) error = true;
+    if (!isEmail) error = true;
+    // if (!isEmail || !endsWithRedberry) error = true;
 
     return {
       hasError: error,

@@ -1,31 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useResumeStore } from "../../store/resumeState";
 
 import { ResumeDoneContainer } from "./styles/resume.styles";
 import UserResume from "./components/UserResume";
 import GoBackBTN from "./components/GoBackBTN";
-
-import { ResumeResponseT } from "../../store/resume.types";
+import PDF from "./PDF/PDF";
 
 const ResumeDone: React.FC = () => {
   const navigate = useNavigate();
-  const { state } = useLocation();
 
   const {
-    personalInfoIsChecked,
-    experienceIsChecked,
-    educationIsChecked,
+    personalInfo,
+    education,
+    resetResumeForms,
+    experience,
     resetFormChecks,
+    educationIsChecked,
+    experienceIsChecked,
+    personalInfoIsChecked,
   } = useResumeStore();
 
-  const userResume: ResumeResponseT = state.userResume;
-
-  const [openSuccess, setOpenSuccess] = useState<boolean>(true);
+  const resetState = () => {
+    resetFormChecks();
+    resetResumeForms();
+  };
 
   function goHome() {
-    resetFormChecks();
+    resetState();
     navigate("/", { replace: true, state: "" });
   }
 
@@ -42,37 +45,9 @@ const ResumeDone: React.FC = () => {
       <div className="resume--wrapper">
         <UserResume
           className="done-resume"
-          resume={{
-            personalInfo: {
-              about_me: userResume.about_me,
-              email: userResume.email,
-              image: userResume.image,
-              name: userResume.name,
-              phone_number: userResume.phone_number,
-              surname: userResume.surname,
-            },
-            education: userResume.educations.map((edu) => ({
-              degree: {
-                label: edu.degree,
-                degree_id: NaN,
-              },
-              description: edu.description,
-              due_date: edu.due_date,
-              institute: edu.institute,
-            })),
-            experience: userResume.experiences,
-          }}
+          resume={{ experience, education, personalInfo }}
         />
-        {openSuccess && (
-          <div className="success-modal">
-            <span>რეზიუმე წარმატებით გაიგზავნა 🎉</span>
-            <button className="close-btn" onClick={() => setOpenSuccess(false)}>
-              <figure>
-                <img src="/assets/icons/close.svg" alt="" />
-              </figure>
-            </button>
-          </div>
-        )}
+        <PDF resume={{ personalInfo, education, experience }} />
       </div>
     </ResumeDoneContainer>
   );

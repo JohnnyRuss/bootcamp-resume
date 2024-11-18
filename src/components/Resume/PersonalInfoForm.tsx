@@ -1,13 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import {
-  useValidate,
-  useFileValidation,
-  useValidateInLoop,
-} from "../../hooks/useValidate";
+import { useValidate, useValidateInLoop } from "../../hooks/useValidate";
 import { useResumeStore } from "../../store/resumeState";
-import { readFileAsDataUrl } from "../../lib/readBase64";
 
 import { InputField, TextField, Button } from "../Layouts";
 import { FormContainer, FileField } from "./styles/forms.styles";
@@ -28,13 +23,27 @@ const PersonalInfo: React.FC = () => {
 
   async function handleAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
+
     const file = e.currentTarget.files?.[0] || null;
 
-    function getURL(url: string) {
-      setAvatar(url);
+    if (!file) return;
+
+    async function fileToBase64() {
+      return await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = (error) => {
+          reject(error);
+        };
+        reader.readAsDataURL(file as File);
+      });
     }
 
-    await readFileAsDataUrl(file, getURL);
+    const url = (await fileToBase64()) as string;
+
+    setAvatar(url);
   }
 
   const {
@@ -62,11 +71,11 @@ const PersonalInfo: React.FC = () => {
   } = useValidate(personalInfo.phone_number, "isGeorgiasPhoneNumber");
 
   const {
-    onBlur: onFileBlur,
-    wasToched,
+    wasTouched,
     error: fileError,
+    onBlur: onFileBlur,
     lazyValidate: validateFile,
-  } = useFileValidation(personalInfo.image);
+  } = useValidate(personalInfo.image as string, "notIsEmpty");
 
   const validForm =
     nameError.hasError ||
@@ -127,7 +136,7 @@ const PersonalInfo: React.FC = () => {
         <label
           className="add-img__btn"
           htmlFor="avatar"
-          onClick={() => !wasToched && onFileBlur()}
+          onClick={() => !wasTouched && onFileBlur()}
         >
           ატვირთვა
         </label>

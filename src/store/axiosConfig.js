@@ -5,7 +5,7 @@ export const axiosQuery = axios.create({
   baseURL: `${END_POINT_ORIGIN}/api`,
 });
 
-export const axioFormDataQuery = axios.create({
+export const axiosFormDataQuery = axios.create({
   baseURL: `${END_POINT_ORIGIN}/api`,
   headers: {
     "Content-Type": "multipart/form-data",

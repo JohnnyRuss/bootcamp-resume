@@ -3,13 +3,11 @@ import { ThemeProvider } from "styled-components";
 import { BaseTheme } from "./styles/AppTheme";
 import { AppStyles } from "./styles/AppStyles";
 
-interface ThemeContextT {}
-
 interface ThemeProviderT {
   children: React.ReactNode;
 }
 
-export const ThemeContext = createContext<ThemeContextT>({});
+export const ThemeContext = createContext({});
 
 const Theme: React.FC<ThemeProviderT> = ({ children }) => {
   return (

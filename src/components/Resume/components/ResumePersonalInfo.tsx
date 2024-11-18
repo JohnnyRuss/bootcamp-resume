@@ -1,7 +1,3 @@
-import React from "react";
-
-import createImgDBUrl from "../../../lib/createImgDBUrl";
-
 import { PersonalInfoT } from "../../../store/resume.types";
 interface ResumePersonalInfoType {
   personalInfo: PersonalInfoT;
@@ -14,14 +10,7 @@ const ResumePersonalInfo: React.FC<ResumePersonalInfoType> = ({
     <div className="personal-details">
       {personalInfo.image && (
         <figure className="user-fig">
-          <img
-            src={
-              personalInfo.image.startsWith("/storage")
-                ? createImgDBUrl(personalInfo.image)
-                : JSON.parse(personalInfo.image)
-            }
-            alt="user"
-          />
+          <img src={personalInfo.image as string} alt="user" />
         </figure>
       )}
 
