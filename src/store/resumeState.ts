@@ -100,7 +100,29 @@ export const useResumeStore = create<ResumeStateT>()(
         (set, get) => ({
           ...ResumeState,
 
-          degrees: [],
+          degrees: [
+            {
+              _id: 1,
+              label: "საშუალო სკოლის დიპლომი",
+              value: "საშუალო სკოლის დიპლომი",
+            },
+            {
+              _id: 2,
+              label: "ზოგადსაგანმანათლებლო დიპლომი",
+              value: "ზოგადსაგანმანათლებლო დიპლომი",
+            },
+            { _id: 3, label: "ბაკალავრი", value: "ბაკალავრი" },
+            { _id: 4, label: "მაგისტრი", value: "მაგისტრი" },
+            { _id: 5, label: "დოქტორი", value: "დოქტორი" },
+            {
+              _id: 6,
+              label: "ასოცირებული ხარისხი",
+              value: "ასოცირებული ხარისხი",
+            },
+            { _id: 7, label: "სტუდენტი", value: "სტუდენტი" },
+            { _id: 8, label: "კოლეჯი", value: "კოლეჯი" },
+            { _id: 9, label: "სხვა", value: "სხვა" },
+          ],
 
           personalInfoIsChecked: false,
           experienceIsChecked: false,
@@ -237,7 +259,6 @@ export const useResumeStore = create<ResumeStateT>()(
             try {
               const { data }: { data: { id: number; title: string }[] } =
                 await axiosQuery("/degrees");
-
               set({
                 degrees: data.map((deg) => ({
                   label: deg.title,

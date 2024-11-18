@@ -1,0 +1,12 @@
+.download-pdf--btn {
+  display: block;
+  background-color: #0e80bf;
+  padding: 1.75rem 0rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  color: #fff;
+  margin-top: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1;
+}

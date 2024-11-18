@@ -33,7 +33,7 @@ const validators = {
 };
 
 export function useValidate(value: ValueT, validate: ValidatorKeysT) {
-  const [wasToched, setWasToched] = useState<boolean>(false);
+  const [wasTouched, setWasTouched] = useState<boolean>(false);
 
   const [error, setError] = useState<ErrorT>({
     hasError: false,
@@ -41,7 +41,7 @@ export function useValidate(value: ValueT, validate: ValidatorKeysT) {
     message: "",
   });
 
-  const onBlur = () => setWasToched(true);
+  const onBlur = () => setWasTouched(true);
 
   const resetError = () =>
     setError({
@@ -50,7 +50,7 @@ export function useValidate(value: ValueT, validate: ValidatorKeysT) {
       message: "",
     });
 
-  // used for mannual validation
+  // used for manual validation
   function lazyValidate(): ErrorT {
     const err = validators[validate](value);
     setError(err);
@@ -60,11 +60,11 @@ export function useValidate(value: ValueT, validate: ValidatorKeysT) {
 
   // run on change after blur
   useEffect(() => {
-    if (!wasToched) return;
+    if (!wasTouched) return;
 
     const err = validators[validate](value);
     setError(err);
-  }, [value, wasToched]);
+  }, [value, wasTouched]);
 
   // runs on mount if persisted value exists
   useEffect(() => {
@@ -74,11 +74,11 @@ export function useValidate(value: ValueT, validate: ValidatorKeysT) {
     setError(err);
   }, []);
 
-  return { onBlur, error, lazyValidate, resetError };
+  return { onBlur, error, lazyValidate, resetError, wasTouched };
 }
 
 export function useFileValidation(value: ValueT) {
-  const [wasToched, setWasToched] = useState<boolean>(false);
+  const [wasTouched, setWasTouched] = useState<boolean>(false);
 
   const [error, setError] = useState<ErrorT>({
     hasError: false,
@@ -86,7 +86,7 @@ export function useFileValidation(value: ValueT) {
     message: "",
   });
 
-  const onBlur = () => setWasToched(true);
+  const onBlur = () => setWasTouched(true);
 
   async function lazyValidate(): Promise<ErrorT> {
     const err = await validationInit.isFile(value);
@@ -96,7 +96,7 @@ export function useFileValidation(value: ValueT) {
   }
 
   useEffect(() => {
-    if (!wasToched && !value) return;
+    if (!wasTouched && !value) return;
 
     async function validateFile() {
       const err = await validationInit.isFile(value);
@@ -104,9 +104,9 @@ export function useFileValidation(value: ValueT) {
     }
 
     validateFile();
-  }, [value, wasToched]);
+  }, [value, wasTouched]);
 
-  return { error, onBlur, wasToched, lazyValidate };
+  return { error, onBlur, wasTouched, lazyValidate };
 }
 
 type ValidatorFnT = () => ErrorT;

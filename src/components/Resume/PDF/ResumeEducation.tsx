@@ -1,36 +1,35 @@
-import React, { Fragment } from "react";
+import { Text, View } from "@react-pdf/renderer";
+import { styles } from "./styles/pdfStyles";
 
 import { EducationT } from "../../../store/resume.types";
-
 interface ResumeEducationType {
   education: EducationT;
 }
 
 const ResumeEducation: React.FC<ResumeEducationType> = ({ education }) => {
   return (
-    <Fragment>
-      <div className="label-date__container">
+    <>
+      <View style={styles.labelDateContainer}>
         {(education.institute || education.degree.label) && (
-          <span className="section__main-label">
+          <Text style={styles.sectionMainLabel}>
             <>
               {education.institute}{" "}
               {education.institute && education.degree.label ? ", " : ""}
               {education.degree.label}
             </>
-          </span>
+          </Text>
         )}
         {education.due_date && (
-          <span className="section__date-period">
+          <Text style={styles.sectionDatePeriod}>
             <>{education.due_date}</>
-          </span>
+          </Text>
         )}
-      </div>
+      </View>
+
       {education.description && (
-        <blockquote className="section-description">
-          {education.description}
-        </blockquote>
+        <Text style={styles.sectionDescription}>{education.description}</Text>
       )}
-    </Fragment>
+    </>
   );
 };
 
