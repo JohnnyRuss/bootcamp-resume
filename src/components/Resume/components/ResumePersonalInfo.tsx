@@ -32,7 +32,7 @@ const ResumePersonalInfo: React.FC<ResumePersonalInfoType> = ({
               <figure>
                 <img src="/assets/icons/phone.svg" alt="at @" />
               </figure>
-              <span>+995 597 63 45 16</span>
+              <span>{personalInfo.phone_number}</span>
             </div>
           )}
         </div>
